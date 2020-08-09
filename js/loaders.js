@@ -2,22 +2,23 @@
  * Projects
  */
 oss_projects = {};
-oss_projects['app_service'] = {
-  blog_post: 'https://yypurdi.blogspot.com',
-  featured: true,
+oss_projects['koma-console'] = {
   position: 1,
-  background: 'msb.jpg'
+  featured: true,  
+  background: 'koma-component.jpg'
 };
-oss_projects['app_service_client'] = {
-  blog_post: 'https://yypurdi.blogspot.com/',
-  featured: true,
+oss_projects['koma-xmpp-server'] = {
   position: 2,
-  background: 'msb.jpg'
+  featured: true,
+  background: 'koma-interface.jpg'
+};
+oss_projects['koma-msb'] = {
+  background: 'koma-msb.jpg'
 };
 oss_projects['koma-fcm'] = {
-  blog_post: 'https://yypurdi.blogspot.com/',
-  featured: true,
-  position: 3,
+  background: 'koma-fcm.jpg'
+};
+oss_projects['koma-xmpp-client'] = {
   background: 'koma-fcm.jpg'
 };
  
@@ -135,13 +136,8 @@ Repository = function(repo) {
   this.description = repo.description;
   this.fork        = repo.fork;
   this.watchers    = repo.watchers;
-  this.forks       = repo.forks;
-}
-
-Repository.prototype.blogPost = function() {
-  if (oss_projects[this.name] && oss_projects[this.name].blog_post) {
-    return oss_projects[this.name].blog_post;
-  }
+  this.forks       = repo.forks;  
+  this.homepage    = repo.homepage;
 }
 
 Repository.prototype.featured = function() {
@@ -181,24 +177,30 @@ Repository.prototype.classes = function() {
   }
 }
 
-Repository.prototype.getBlogLink = function() {
-  if (this.blogPost()) {
-    return '<a href="'+ this.blogPost() +'" target="_blank"><span class="octicon octicon-file-text"></span> Blog post</a> ';
+Repository.prototype.getHomePage = function() {
+  if (this.homepage) {
+	if(this.homepage=='https://koma-network.github.io'){
+		return this.url;
+	}else{
+		return this.homepage;
+	}
+  }else{
+	return this.url;
   }
 }
 
 Repository.prototype.getContainer = function(index) {
   var last = '';
   if (index % 4 == 0) { last = 'last-in-row' }
-
+  
   return [
     '<div class="col-sm-2 text-center">',
     '    <div class="thumbnail">',
-    '    <a href="', this.url, '">',
+    '    <a href="', this.getHomePage(), '">',
     '          <img src="images/opensource/',this.background(),'" alt="Community" class="img-responsive center-block" style="height:100px"/>',
     '            <div class="caption">',
-    '                  <p>',this.name,'</p>',
-	'                  <p>',this.language,'</p>',
+    '                  <p style="color:#000">',this.name,'</p>',
+	'                  <p style="color:#000">',this.language,'</p>',
     '            </div>',
     '    </a>',
     '    </div>',
@@ -238,16 +240,6 @@ Repository.prototype.repoContent = function() {
   ].join('');
 }
 
-Repository.prototype.bottomLinks = function() {
-  if (this.blogPost()) {
-    return [
-      '<div class="island-item bottom-links">',
-        this.getBlogLink(),
-      '</div>'
-    ].join('');
-  }
-}
-
 /*
  * Loader
  */
@@ -271,11 +263,11 @@ function getAllPages(urlPrefix, callback, page, results) {
 }
 
 function getGithubRepos(callback, page, repos) {
-  getAllPages('https://api.github.com/users/yypurdi/repos', callback);
+  getAllPages('https://api.github.com/users/koma-network/repos', callback);
 }
 
 function loadRepositoryData(repoData) {
-  var org = new Organization('yypurdi');
+  var org = new Organization('koma-network');
   org.repos = [];
 
   repoData.forEach(function(repoDatum) {
